@@ -7,16 +7,16 @@ namespace PerfumeStore.Models
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "اسم المستخدم مطلوب")]
+        [Required(ErrorMessage = "Username is required")]
         [StringLength(100)]
         public string Username { get; set; }
 
-        [Required(ErrorMessage = "البريد الإلكتروني مطلوب")]
-        [EmailAddress(ErrorMessage = "صيغة البريد غير صحيحة")]
+        [Required(ErrorMessage = "Email address is required")]
+        [EmailAddress(ErrorMessage = "Invalid email format")]
         [StringLength(100)]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "كلمة المرور مطلوبة")]
+        [Required(ErrorMessage = "Password is required")]
         [StringLength(256)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
@@ -29,14 +29,14 @@ namespace PerfumeStore.Models
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "اسم العطر مطلوب")]
+        [Required(ErrorMessage = "Perfume name is required")]
         [StringLength(100)]
         public string Name { get; set; }
 
         [StringLength(255)]
         public string Description { get; set; }
 
-        [Range(0.01, 99999.99, ErrorMessage = "السعر يجب أن يكون أكبر من صفر")]
+        [Range(0.01, 99999.99, ErrorMessage = "Price must be greater than zero")]
         public decimal? Price { get; set; }
 
         [StringLength(500)]

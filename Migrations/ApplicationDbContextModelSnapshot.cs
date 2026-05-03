@@ -15,7 +15,7 @@ namespace PerfumeStore.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "10.0.7");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
 
             modelBuilder.Entity("PerfumeStore.Models.Cart", b =>
                 {
@@ -92,6 +92,32 @@ namespace PerfumeStore.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Perfumes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "A rich blend of agarwood and dark spices, perfect for evening wear.",
+                            ImagePath = "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=600&q=80",
+                            Name = "Oud Supreme",
+                            Price = 129.99m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Elegant damascus rose infused with subtle hints of vanilla and amber.",
+                            ImagePath = "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=600&q=80",
+                            Name = "Midnight Rose",
+                            Price = 89.50m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Fresh bergamot, lemon, and a touch of oceanic breeze. A vibrant daytime scent.",
+                            ImagePath = "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?auto=format&fit=crop&w=600&q=80",
+                            Name = "Citrus Horizon",
+                            Price = 75.00m
+                        });
                 });
 
             modelBuilder.Entity("PerfumeStore.Models.User", b =>
@@ -126,6 +152,16 @@ namespace PerfumeStore.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "admin@royalscent.com",
+                            Password = "$2a$11$Gwvr.F9.HS8Q2ZoVoWi78O1ynSWJPAAVIkXdp1KoVIujM7FkpvQp2",
+                            Role = "Admin",
+                            Username = "Admin"
+                        });
                 });
 
             modelBuilder.Entity("PerfumeStore.Models.Cart", b =>

@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace PerfumeStore.Migrations
 {
     /// <inheritdoc />
@@ -94,6 +96,21 @@ namespace PerfumeStore.Migrations
                         principalTable: "Users",
                         principalColumn: "Id");
                 });
+
+            migrationBuilder.InsertData(
+                table: "Perfumes",
+                columns: new[] { "Id", "Description", "ImagePath", "Name", "Price" },
+                values: new object[,]
+                {
+                    { 1, "A rich blend of agarwood and dark spices, perfect for evening wear.", "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=600&q=80", "Oud Supreme", 129.99m },
+                    { 2, "Elegant damascus rose infused with subtle hints of vanilla and amber.", "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=600&q=80", "Midnight Rose", 89.50m },
+                    { 3, "Fresh bergamot, lemon, and a touch of oceanic breeze. A vibrant daytime scent.", "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?auto=format&fit=crop&w=600&q=80", "Citrus Horizon", 75.00m }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "Email", "Password", "Role", "Username" },
+                values: new object[] { 1, "admin@royalscent.com", "$2a$11$Gwvr.F9.HS8Q2ZoVoWi78O1ynSWJPAAVIkXdp1KoVIujM7FkpvQp2", "Admin", "Admin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cart_PerfumeId",

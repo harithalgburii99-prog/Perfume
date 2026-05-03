@@ -93,7 +93,7 @@ namespace PerfumeStore.Controllers
             _context.Cart.RemoveRange(cartItems);
             await _context.SaveChangesAsync();
 
-            TempData["Message"] = "تم إرسال طلبك بنجاح!";
+            TempData["Message"] = "Your order has been placed successfully!";
             return RedirectToAction("Index");
         }
     }

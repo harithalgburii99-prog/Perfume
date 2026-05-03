@@ -28,7 +28,7 @@ namespace PerfumeStore.Controllers
         {
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
-                ViewBag.Error = "البريد الإلكتروني وكلمة المرور مطلوبان";
+                ViewBag.Error = "Email and password are required";
                 return View();
             }
 
@@ -56,7 +56,7 @@ namespace PerfumeStore.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            ViewBag.Error = "بيانات الدخول غير صحيحة";
+            ViewBag.Error = "Invalid login credentials";
             return View();
         }
 
@@ -74,7 +74,7 @@ namespace PerfumeStore.Controllers
             {
                 if (await _context.Users.AnyAsync(u => u.Email == model.Email))
                 {
-                    ModelState.AddModelError("Email", "البريد الإلكتروني مستخدم مسبقاً");
+                    ModelState.AddModelError("Email", "Email is already in use");
                     return View(model);
                 }
 

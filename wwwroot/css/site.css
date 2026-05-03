@@ -1,31 +1,124 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+/* Premium Luxury CSS for Royal Scent */
+:root {
+    --brand-gold: #d4af37;
+    --brand-gold-dark: #b5952f;
+    --brand-bg: #0a0a0a;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
 }
 
 body {
-  margin-bottom: 60px;
+    background-color: var(--brand-bg);
+    color: #f8f9fa;
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-image: 
+        radial-gradient(circle at 15% 50%, rgba(212, 175, 55, 0.03), transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(212, 175, 55, 0.04), transparent 25%);
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+h1, h2, h3, h4, h5, h6, .navbar-brand {
+    font-family: 'Outfit', sans-serif;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.text-warning {
+    color: var(--brand-gold) !important;
+}
+
+.btn-warning {
+    background-color: var(--brand-gold);
+    border-color: var(--brand-gold);
+    color: #000;
+}
+
+.btn-warning:hover {
+    background-color: var(--brand-gold-dark);
+    border-color: var(--brand-gold-dark);
+    color: #000;
+}
+
+.btn-outline-warning {
+    color: var(--brand-gold);
+    border-color: var(--brand-gold);
+}
+
+.btn-outline-warning:hover {
+    background-color: var(--brand-gold);
+    color: #000;
+}
+
+/* Glassmorphism Classes */
+.glass-panel, .glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    border-radius: 1rem;
+}
+
+/* Perfume Cards */
+.perfume-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(212, 175, 55, 0.1);
+    border-color: rgba(212, 175, 55, 0.3) !important;
+}
+
+.perfume-img {
+    height: 300px;
+    object-fit: cover;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    transition: transform 0.5s ease;
+}
+
+.perfume-card:hover .perfume-img {
+    transform: scale(1.02);
+}
+
+/* Nav & Footer */
+.premium-nav {
+    background: rgba(10, 10, 10, 0.8) !important;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--glass-border) !important;
+}
+
+.premium-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.text-gradient {
+    background: linear-gradient(to right, #d4af37, #f3e5ab);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.premium-footer {
+    background: rgba(0, 0, 0, 0.5) !important;
+    border-top: 1px solid var(--glass-border) !important;
+    margin-top: auto;
+}
+
+/* Tables */
+.table-dark {
+    --bs-table-bg: transparent;
+}
+
+/* Forms */
+.form-control.bg-dark {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+.form-control.bg-dark:focus {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    border-color: var(--brand-gold);
+    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
+    color: white;
 }

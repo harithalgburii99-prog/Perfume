@@ -1,181 +1,97 @@
 @model IEnumerable<PerfumeStore.Models.CartViewModel>
 
 @{
-    ViewBag.Title = "سلة المشتريات";
-    @* BUG FIX #18: Cart/Index had no Layout declaration at all.
-       Without this line the page renders without the navbar/footer. *@
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Shopping Cart";
 }
 
-@* BUG FIX #19: If Model is null (user not logged in or empty cart)
-   the foreach and .Sum() calls throw NullReferenceException. *@
-@if (User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value == null)
+<div class="row mb-4 align-items-center">
+    <div class="col">
+        <h2 class="text-light fw-bold"><i class="bi bi-cart3 me-2 text-warning"></i>Your Cart</h2>
+    </div>
+</div>
+
+@if (TempData["Message"] != null)
 {
-    <div class="empty-state">
-        <i class="fas fa-lock"></i>
-        <h3>يرجى تسجيل الدخول</h3>
-        <p>تحتاج إلى تسجيل الدخول لعرض سلة مشترياتك.</p>
-        <a href="/Account/Login" class="btn-gold">تسجيل الدخول</a>
+    <div class="alert alert-success bg-success bg-opacity-10 border-success text-success rounded-3 mb-4">
+        <i class="bi bi-check-circle me-2"></i>@TempData["Message"]
     </div>
 }
-else if (Model == null || !Model.Any())
-{
-    <div class="empty-state">
-        <i class="fas fa-shopping-bag"></i>
-        <h3>سلتك فارغة</h3>
-        <p>لم تقم بإضافة أي عطور بعد.</p>
-        <a href="/Perfumes/Index" class="btn-gold">تصفح المتجر</a>
-    </div>
-}
-else
-{
-    <div class="cart-wrapper">
-        <h2 class="cart-title"><i class="fas fa-shopping-bag me-2"></i> سلة المشتريات</h2>
 
-        <div class="cart-table-wrapper">
-            <table class="table cart-table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>اسم العطر</th>
-                        <th>السعر</th>
-                        <th>إجراء</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{int rowNum = 1;}
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td class="text-muted">@(rowNum++)</td>
-                            <td class="fw-bold">@item.PerfumeName</td>
-                            @* BUG FIX #20: Price format was "0.00 $" — dollar sign after
-                               the number is non-standard. Use "C" or explicit formatting. *@
-                            <td class="price-cell">@item.Price.ToString("0.00") <span class="currency">USD</span></td>
-                            <td>
-                                @* BUG FIX #21: Delete via GET link (/Cart/Remove/id) is a
-                                   CSRF risk & violates HTTP semantics. Should be a POST form.
-                                   Added JS confirm + form POST pattern. *@
-                                <form method="post" action="/Cart/Remove/@item.CartId" style="display:inline;"
-                                      onsubmit="return confirm('هل تريد حذف هذا العطر من السلة؟')">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn-remove">
-                                        <i class="fas fa-trash-alt"></i> حذف
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-
-        <div class="cart-summary">
-            <div class="summary-total">
-                المجموع الكلي:
-                <span class="total-amount">@Model.Sum(x => x.Price).ToString("0.00") USD</span>
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card glass-card border-0 mb-4">
+            <div class="card-body p-0">
+                @if (Model != null && Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover mb-0 bg-transparent">
+                            <thead class="text-warning">
+                                <tr>
+                                    <th class="ps-4">Product</th>
+                                    <th>Price</th>
+                                    <th class="pe-4 text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr class="align-middle">
+                                        <td class="ps-4 text-light fw-semibold">@item.PerfumeName</td>
+                                        <td class="text-light-emphasis">$@item.Price.ToString("0.00")</td>
+                                        <td class="pe-4 text-end">
+                                            <form asp-action="Remove" method="post" class="d-inline">
+                                                <input type="hidden" name="id" value="@item.CartId" />
+                                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3">Remove</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="bi bi-cart-x display-1 text-muted mb-3 opacity-25"></i>
+                        <h4 class="text-light-emphasis">Your cart is empty.</h4>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-warning rounded-pill mt-3 px-4">Continue Shopping</a>
+                    </div>
+                }
             </div>
-
-            @* BUG FIX #22: "إتمام عملية الدفع" button had no action — just a plain
-               <button> with no href/form. Wired to Checkout action. *@
-            <form method="post" action="/Cart/Checkout">
-                @Html.AntiForgeryToken()
-                <button type="submit" class="btn-checkout">
-                    <i class="fas fa-credit-card me-2"></i> إتمام عملية الدفع
-                </button>
-            </form>
         </div>
     </div>
-}
 
-<style>
-    .empty-state {
-        text-align: center;
-        padding: 80px 20px;
-        color: #999;
+    @if (Model != null && Model.Any())
+    {
+        <div class="col-lg-4">
+            <div class="card glass-card border-0 sticky-top" style="top: 2rem;">
+                <div class="card-body p-4">
+                    <h5 class="card-title text-light fw-bold mb-4">Order Summary</h5>
+                    
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-light-emphasis">Subtotal</span>
+                        <span class="text-light fw-semibold">$@Model.Sum(x => x.Price).ToString("0.00")</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-light-emphasis">Shipping</span>
+                        <span class="text-success fw-semibold">Free</span>
+                    </div>
+                    
+                    <hr class="border-secondary my-4">
+                    
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="text-light fw-bold fs-5">Total</span>
+                        <span class="text-warning fw-bold fs-5">$@Model.Sum(x => x.Price).ToString("0.00")</span>
+                    </div>
+
+                    <form asp-action="Checkout" method="post">
+                        <button type="submit" class="btn btn-warning w-100 py-3 rounded-pill fw-bold text-dark shadow-sm">
+                            Proceed to Checkout <i class="bi bi-arrow-right ms-2"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
     }
-
-    .empty-state i { font-size: 4rem; color: #ddd; margin-bottom: 20px; display: block; }
-    .empty-state h3 { color: #333; font-weight: 700; margin-bottom: 10px; }
-
-    .btn-gold {
-        display: inline-block;
-        margin-top: 20px;
-        background: #b8860b;
-        color: white;
-        padding: 12px 30px;
-        font-weight: 700;
-        text-decoration: none;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        transition: 0.3s;
-    }
-
-    .btn-gold:hover { background: #966d08; color: white; }
-
-    .cart-wrapper { max-width: 800px; margin: 0 auto; padding: 30px 0; }
-
-    .cart-title {
-        font-weight: 800;
-        color: #1a1a1a;
-        margin-bottom: 30px;
-        padding-bottom: 15px;
-        border-bottom: 2px solid #b8860b;
-    }
-
-    .cart-table-wrapper { overflow-x: auto; }
-
-    .cart-table thead {
-        background: #1a1a1a;
-        color: white;
-    }
-
-    .cart-table thead th { padding: 15px; font-weight: 600; border: none; }
-    .cart-table tbody td { padding: 15px; vertical-align: middle; }
-    .cart-table tbody tr:hover { background: #fafafa; }
-
-    .price-cell { color: #b8860b; font-weight: 700; }
-    .currency { font-size: 0.75rem; color: #999; }
-
-    .btn-remove {
-        background: transparent;
-        border: 1px solid #dc3545;
-        color: #dc3545;
-        padding: 6px 14px;
-        font-size: 0.85rem;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    .btn-remove:hover { background: #dc3545; color: white; }
-
-    .cart-summary {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 30px;
-        padding: 20px 25px;
-        background: #f9f9f9;
-        border-top: 3px solid #b8860b;
-        flex-wrap: wrap;
-        gap: 15px;
-    }
-
-    .summary-total { font-size: 1.1rem; font-weight: 600; color: #333; }
-    .total-amount { font-size: 1.4rem; font-weight: 800; color: #b8860b; margin-right: 10px; }
-
-    .btn-checkout {
-        background: #1a1a1a;
-        color: white;
-        border: none;
-        padding: 14px 35px;
-        font-weight: 700;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    .btn-checkout:hover { background: #b8860b; }
-</style>
-
+</div>

@@ -1,116 +1,43 @@
+@model PerfumeStore.Models.User
+
 @{
-    ViewBag.Title = "تسجيل الدخول";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Sign In";
 }
 
-<div class="auth-wrapper">
-    <div class="auth-card">
-        <div class="auth-header">
-            <i class="fas fa-crown auth-icon"></i>
-            <h2>تسجيل الدخول</h2>
-            <p class="auth-subtitle">مرحباً بعودتك إلى متجر العطور الملكي</p>
-        </div>
-
-        @* BUG FIX #11: Missing @Html.AntiForgeryToken() — forms without it
-           are vulnerable to Cross-Site Request Forgery (CSRF) attacks.
-           Add [ValidateAntiForgeryToken] attribute to the POST action too. *@
-        @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "auth-form" }))
-        {
-            @Html.AntiForgeryToken()
-
-            @if (!string.IsNullOrEmpty(ViewBag.Error))
+<div class="row justify-content-center">
+    <div class="col-md-5 mt-5">
+        <div class="card glass-card border-0 p-4">
+            <div class="text-center mb-4">
+                <i class="bi bi-person-circle display-4 text-warning mb-3"></i>
+                <h3 class="fw-bold text-light">Welcome Back</h3>
+                <p class="text-muted small">Sign in to your Royal Scent account</p>
+            </div>
+            
+            @if (ViewBag.Error != null)
             {
-                <div class="alert alert-danger text-center">
-                    <i class="fas fa-exclamation-triangle me-2"></i>@ViewBag.Error
+                <div class="alert alert-danger bg-danger bg-opacity-10 border-danger text-danger text-center rounded-3">
+                    @ViewBag.Error
                 </div>
             }
 
-            <div class="form-group mb-4">
-                <label for="email" class="form-label">البريد الإلكتروني</label>
-                @* BUG FIX #12: Input type was "text" for email — should be "email"
-                   for proper validation and mobile keyboard on phones. *@
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                    <input type="email" id="email" name="email" class="form-control" placeholder="example@mail.com" required />
+            <form asp-action="Login" method="post">
+                <div class="mb-3">
+                    <label class="form-label text-light-emphasis small fw-bold">Email Address</label>
+                    <input type="email" name="email" class="form-control bg-dark text-light border-secondary" required />
                 </div>
-            </div>
-
-            <div class="form-group mb-4">
-                <label for="password" class="form-label">كلمة المرور</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                    <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required />
+                
+                <div class="mb-4">
+                    <label class="form-label text-light-emphasis small fw-bold">Password</label>
+                    <input type="password" name="password" class="form-control bg-dark text-light border-secondary" required />
                 </div>
-            </div>
 
-            <button type="submit" class="btn-auth w-100">
-                <i class="fas fa-sign-in-alt me-2"></i> دخول
-            </button>
-
-            <p class="text-center mt-4 text-muted small">
-                ليس لديك حساب؟ <a href="/Account/Register" class="link-gold">سجّل الآن</a>
-            </p>
-        }
+                <button type="submit" class="btn btn-warning w-100 fw-bold rounded-pill mb-3">Sign In</button>
+                
+                <div class="text-center mt-3">
+                    <span class="text-muted small">Don't have an account? </span>
+                    <a asp-action="Register" class="text-warning text-decoration-none small fw-bold">Create Account</a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
-
-<style>
-    .auth-wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 70vh;
-        padding: 20px;
-    }
-
-    .auth-card {
-        background: #fff;
-        border-top: 4px solid #b8860b;
-        padding: 50px 40px;
-        width: 100%;
-        max-width: 460px;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.08);
-    }
-
-    .auth-header { text-align: center; margin-bottom: 35px; }
-    .auth-icon { font-size: 2.5rem; color: #b8860b; margin-bottom: 15px; display: block; }
-    .auth-header h2 { font-weight: 800; color: #1a1a1a; margin-bottom: 5px; }
-    .auth-subtitle { color: #999; font-size: 0.9rem; }
-
-    .form-label { font-weight: 600; color: #444; font-size: 0.9rem; margin-bottom: 8px; }
-
-    .input-group-text {
-        background: #f9f9f9;
-        border-color: #eee;
-        color: #b8860b;
-    }
-
-    .form-control {
-        border-color: #eee;
-        padding: 10px 15px;
-        font-size: 0.95rem;
-    }
-
-    .form-control:focus {
-        border-color: #b8860b;
-        box-shadow: 0 0 0 3px rgba(184,134,11,0.1);
-    }
-
-    .btn-auth {
-        background: #1a1a1a;
-        color: white;
-        border: none;
-        padding: 14px;
-        font-size: 1rem;
-        font-weight: 700;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    .btn-auth:hover { background: #b8860b; }
-    .link-gold { color: #b8860b; text-decoration: none; font-weight: 600; }
-    .link-gold:hover { text-decoration: underline; }
-</style>
-
