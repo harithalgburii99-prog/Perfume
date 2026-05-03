@@ -1,0 +1,132 @@
+@model IEnumerable<PerfumeStore.Models.Perfume>
+
+@{
+    ViewBag.Title = "لوحة التحكم";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@* BUG FIX #27: Dashboard had no access control in the view.
+   Any user who knew the URL could reach /Perfumes/Dashboard.
+   Add [Authorize] + role check in the controller AND a UI guard here. *@
+@if (Session["UserRole"] == null || Session["UserRole"].ToString() != "Admin")
+{
+    <div class="alert alert-danger text-center mt-5">
+        <i class="fas fa-ban me-2"></i> غير مصرح لك بالوصول إلى لوحة التحكم.
+    </div>
+    return;
+}
+
+<div class="dashboard-wrapper">
+    <div class="dashboard-header d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1"><i class="fas fa-user-shield me-2 text-warning"></i>لوحة تحكم العطور</h2>
+            <p class="text-muted small mb-0">إدارة جميع العطور في المتجر</p>
+        </div>
+        @Html.ActionLink("+ إضافة عطر جديد", "Create", "Perfumes", null, new { @class = "btn-add" })
+    </div>
+
+    @* BUG FIX #28: No null/empty guard on Model in dashboard *@
+    @if (Model == null || !Model.Any())
+    {
+        <div class="empty-notice">
+            <i class="fas fa-box-open fa-2x mb-3" style="color:#ddd;display:block"></i>
+            لا توجد عطور في المتجر بعد.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table dash-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>اسم العطر</th>
+                        <th>السعر</th>
+                        <th>الوصف</th>
+                        <th>العمليات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-muted">@item.Id</td>
+                            <td class="fw-bold">@item.Name</td>
+                            @* BUG FIX #29: Price is nullable — must guard against null *@
+                            <td style="color:#b8860b;font-weight:700">
+                                @(item.Price.HasValue ? item.Price.Value.ToString("0.00") + " $" : "—")
+                            </td>
+                            <td class="text-muted small">
+                                @(string.IsNullOrEmpty(item.Description) ? "—" : (item.Description.Length > 60 ? item.Description.Substring(0, 60) + "…" : item.Description))
+                            </td>
+                            <td>
+                                <div class="action-group">
+                                    @Html.ActionLink("تعديل", "Edit", "Perfumes", new { id = item.Id }, new { @class = "btn-action btn-edit" })
+
+                                    @* BUG FIX #30: Delete was a GET ActionLink.
+                                       Changed to POST form with CSRF token. *@
+                                    <form method="post" action="@Url.Action("Delete", "Perfumes", new { id = item.Id })"
+                                          style="display:inline"
+                                          onsubmit="return confirm('هل أنت متأكد من حذف عطر: @item.Name ؟')">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn-action btn-del">حذف</button>
+                                    </form>
+
+                                    @Html.ActionLink("طلب", "Order", "Perfumes", new { id = item.Id }, new { @class = "btn-action btn-order" })
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+<style>
+    .dashboard-wrapper { padding: 20px 0; }
+
+    .btn-add {
+        background: #b8860b;
+        color: white;
+        padding: 10px 25px;
+        font-weight: 700;
+        text-decoration: none;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+        transition: 0.3s;
+        white-space: nowrap;
+    }
+
+    .btn-add:hover { background: #966d08; color: white; }
+
+    .dash-table thead { background: #1a1a1a; color: white; }
+    .dash-table thead th { padding: 15px; font-weight: 600; border: none; }
+    .dash-table tbody td { padding: 14px; vertical-align: middle; }
+    .dash-table tbody tr:hover { background: #fafafa; }
+
+    .action-group { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    .btn-action {
+        padding: 5px 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        transition: 0.2s;
+    }
+
+    .btn-edit { background: #e8f0fe; color: #1a73e8; }
+    .btn-edit:hover { background: #1a73e8; color: white; }
+
+    .btn-del { background: #fce8e6; color: #d93025; }
+    .btn-del:hover { background: #d93025; color: white; }
+
+    .btn-order { background: #e6f4ea; color: #188038; }
+    .btn-order:hover { background: #188038; color: white; }
+
+    .empty-notice { text-align: center; padding: 60px; color: #999; }
+</style>

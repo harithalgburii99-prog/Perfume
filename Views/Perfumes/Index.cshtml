@@ -1,0 +1,141 @@
+@model IEnumerable<PerfumeStore.Models.Perfume>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "العطور";
+}
+
+<style>
+    body { background-color: #fdfdfd; font-family: 'Cairo', sans-serif; }
+
+    .page-title {
+        color: #1a1a1a;
+        font-weight: 800;
+        letter-spacing: 1px;
+        margin-bottom: 40px;
+    }
+
+    .perfume-card {
+        background: #fff;
+        border: 1px solid #eee;
+        border-radius: 0;
+        transition: all 0.4s ease;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 320px;
+        border-top: 4px solid #1a1a1a;
+    }
+
+    .perfume-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+        border-top: 4px solid #b8860b;
+    }
+
+    .card-body { display: flex; flex-direction: column; justify-content: center; flex-grow: 1; }
+
+    .price-tag { font-size: 1.5rem; color: #b8860b; font-weight: 700; margin: 15px 0; }
+
+    .btn-buy {
+        background-color: #1a1a1a;
+        color: white;
+        border-radius: 0;
+        padding: 12px 25px;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+        transition: 0.3s;
+        border: none;
+        display: block;
+        text-align: center;
+        text-decoration: none;
+    }
+
+    .btn-buy:hover { background-color: #b8860b; color: white; }
+
+    .admin-controls { background: #f9f9f9; padding: 12px; border-top: 1px solid #eee; }
+    .perfume-name { font-family: 'Playfair Display', serif; font-size: 1.3rem; letter-spacing: 0.5px; }
+
+    .empty-collection {
+        text-align: center;
+        padding: 80px;
+        color: #999;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="text-center">
+        <h1 class="page-title text-uppercase">Our Exquisite Collection</h1>
+    </div>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="mb-5 text-end">
+            <a href="/Perfumes/Create" class="btn btn-outline-dark" style="border-radius:0">
+                <i class="fas fa-plus"></i> إضافة عطر جديد للمتجر
+            </a>
+        </div>
+    }
+
+    @* BUG FIX #23: No null-check on Model. If controller returns null
+       (e.g. DB connection failure) this page crashes with NullReferenceException. *@
+    @if (Model == null || !Model.Any())
+    {
+        <div class="empty-collection">
+            <i class="fas fa-wind fa-3x mb-3" style="color:#ddd"></i>
+            <h4>لا توجد عطور في المتجر حالياً</h4>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-lg-4 col-md-6 mb-5">
+                    <div class="perfume-card shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <span class="text-muted small text-uppercase mb-2 d-block" style="letter-spacing:2px">Premium Scent</span>
+                            <h5 class="fw-bold text-uppercase mb-3 perfume-name">@item.Name</h5>
+                            <div style="height:2px;width:40px;background:#b8860b;margin:0 auto 20px;"></div>
+                            <p class="text-muted mb-3">@item.Description</p>
+
+                            @* BUG FIX #24: item.Price is nullable (decimal?) — calling .ToString("C")
+                               on a null value throws NullReferenceException. Use null-coalescing. *@
+                            <div class="price-tag">
+                                @(item.Price.HasValue ? item.Price.Value.ToString("C") : "السعر غير محدد")
+                            </div>
+
+                            @* BUG FIX #25: Buy link used hard-coded string "/Perfumes/Buy/@item.Id"
+                               which is correct but not using Url.Action — fine to keep, noted for consistency *@
+                            <a href="@Url.Action("Buy", "Perfumes", new { id = item.Id })" class="btn-buy">
+                                Add To Cart
+                            </a>
+                        </div>
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <div class="admin-controls d-flex justify-content-around">
+                                <a href="@Url.Action("Edit", "Perfumes", new { id = item.Id })" class="text-secondary small text-decoration-none">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                @* BUG FIX #26: Delete via GET is dangerous. Should be POST.
+                                   Using a small form with AntiForgeryToken instead. *@
+                                <form method="post" action="@Url.Action("Delete", "Perfumes", new { id = item.Id })"
+                                      style="display:inline"
+                                      onsubmit="return confirm('هل أنت متأكد من حذف هذا العطر؟')">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="text-danger small bg-transparent border-0 p-0" style="font-size:0.85rem;cursor:pointer">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+

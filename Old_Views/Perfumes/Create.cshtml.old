@@ -1,0 +1,123 @@
+@model PerfumeStore.Models.Perfume
+
+@{
+    ViewBag.Title = "إضافة عطر جديد";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@* BUG FIX #15: No authorization guard — any logged-in user could POST to Create.
+   Add [Authorize] + role check in the controller. The view adds a UI guard too. *@
+@if (Session["UserRole"] == null || Session["UserRole"].ToString() != "Admin")
+{
+    <div class="alert alert-danger text-center mt-5">
+        <i class="fas fa-ban me-2"></i> غير مصرح لك بالوصول إلى هذه الصفحة.
+        <a href="/Perfumes/Index" class="alert-link">العودة للمتجر</a>
+    </div>
+}
+else
+{
+    <div class="create-wrapper">
+        <div class="create-card">
+            <div class="create-header">
+                <i class="fas fa-plus-circle"></i>
+                <h2>إضافة عطر جديد</h2>
+            </div>
+
+            @* BUG FIX #16: Missing AntiForgeryToken *@
+            @using (Html.BeginForm("Create", "Perfumes", FormMethod.Post, new { @class = "create-form" }))
+            {
+                @Html.AntiForgeryToken()
+
+                @if (!string.IsNullOrEmpty(ViewBag.Error))
+                {
+                    <div class="alert alert-danger">@ViewBag.Error</div>
+                }
+
+                <div class="form-group mb-4">
+                    <label class="form-label">اسم العطر</label>
+                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control", placeholder = "مثال: Oud Royal" })
+                    @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger small" })
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="form-label">السعر ($)</label>
+                    @Html.TextBoxFor(m => m.Price, new { @class = "form-control", placeholder = "0.00", type = "number", step = "0.01", min = "0" })
+                    @Html.ValidationMessageFor(m => m.Price, "", new { @class = "text-danger small" })
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="form-label">الوصف</label>
+                    @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = "4", placeholder = "وصف مختصر للعطر..." })
+                    @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger small" })
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="form-label">رابط الصورة</label>
+                    @* BUG FIX #17: ImagePath was referenced in the original view but
+                       the Perfume model had no such property → compile error.
+                       Property added to model + DB migration note added. *@
+                    @Html.TextBoxFor(m => m.ImagePath, new { @class = "form-control", placeholder = "https://..." })
+                    @Html.ValidationMessageFor(m => m.ImagePath, "", new { @class = "text-danger small" })
+                </div>
+
+                <div class="d-flex gap-3">
+                    <button type="submit" class="btn-save flex-grow-1">
+                        <i class="fas fa-save me-2"></i> حفظ العطر
+                    </button>
+                    <a href="/Perfumes/Dashboard" class="btn-cancel">
+                        <i class="fas fa-times"></i> إلغاء
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<style>
+    .create-wrapper { display: flex; justify-content: center; padding: 40px 20px; }
+
+    .create-card {
+        background: #fff;
+        border-top: 4px solid #b8860b;
+        padding: 50px 40px;
+        width: 100%;
+        max-width: 560px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+    }
+
+    .create-header { text-align: center; margin-bottom: 35px; }
+    .create-header i { font-size: 2rem; color: #b8860b; display: block; margin-bottom: 10px; }
+    .create-header h2 { font-weight: 800; color: #1a1a1a; }
+
+    .form-label { font-weight: 600; color: #444; font-size: 0.9rem; }
+    .form-control { border-color: #eee; padding: 10px 15px; }
+    .form-control:focus { border-color: #b8860b; box-shadow: 0 0 0 3px rgba(184,134,11,0.1); }
+
+    .btn-save {
+        background: #1a1a1a;
+        color: white;
+        border: none;
+        padding: 13px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .btn-save:hover { background: #b8860b; }
+
+    .btn-cancel {
+        background: #f0f0f0;
+        color: #444;
+        border: none;
+        padding: 13px 20px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .btn-cancel:hover { background: #e0e0e0; color: #333; }
+</style>
