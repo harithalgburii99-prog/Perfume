@@ -1,7 +1,7 @@
 /* Premium Luxury CSS for Royal Scent */
 :root {
-    --brand-gold: #d4af37;
-    --brand-gold-dark: #b5952f;
+    --brand-accent: #9d4edd;
+    --brand-accent-dark: #7b2cbf;
     --brand-bg: #0a0a0a;
     --glass-bg: rgba(255, 255, 255, 0.05);
     --glass-border: rgba(255, 255, 255, 0.1);
@@ -15,8 +15,8 @@ body {
     display: flex;
     flex-direction: column;
     background-image: 
-        radial-gradient(circle at 15% 50%, rgba(212, 175, 55, 0.03), transparent 25%),
-        radial-gradient(circle at 85% 30%, rgba(212, 175, 55, 0.04), transparent 25%);
+        radial-gradient(circle at 15% 50%, rgba(157, 78, 221, 0.03), transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(157, 78, 221, 0.04), transparent 25%);
 }
 
 h1, h2, h3, h4, h5, h6, .navbar-brand {
@@ -24,29 +24,29 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
 }
 
 .text-warning {
-    color: var(--brand-gold) !important;
+    color: var(--brand-accent) !important;
 }
 
 .btn-warning {
-    background-color: var(--brand-gold);
-    border-color: var(--brand-gold);
-    color: #000;
+    background-color: var(--brand-accent);
+    border-color: var(--brand-accent);
+    color: #fff;
 }
 
 .btn-warning:hover {
-    background-color: var(--brand-gold-dark);
-    border-color: var(--brand-gold-dark);
-    color: #000;
+    background-color: var(--brand-accent-dark);
+    border-color: var(--brand-accent-dark);
+    color: #fff;
 }
 
 .btn-outline-warning {
-    color: var(--brand-gold);
-    border-color: var(--brand-gold);
+    color: var(--brand-accent);
+    border-color: var(--brand-accent);
 }
 
 .btn-outline-warning:hover {
-    background-color: var(--brand-gold);
-    color: #000;
+    background-color: var(--brand-accent);
+    color: #fff;
 }
 
 /* Glassmorphism Classes */
@@ -66,8 +66,8 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
 /* Perfume Cards */
 .perfume-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 15px 35px rgba(212, 175, 55, 0.1);
-    border-color: rgba(212, 175, 55, 0.3) !important;
+    box-shadow: 0 15px 35px rgba(157, 78, 221, 0.1);
+    border-color: rgba(157, 78, 221, 0.3) !important;
 }
 
 .perfume-img {
@@ -96,7 +96,7 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
 }
 
 .text-gradient {
-    background: linear-gradient(to right, #d4af37, #f3e5ab);
+    background: linear-gradient(to right, #9d4edd, #e0aaff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -118,8 +118,8 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
 }
 .form-control.bg-dark:focus {
     background-color: rgba(0, 0, 0, 0.8) !important;
-    border-color: var(--brand-gold);
-    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
+    border-color: var(--brand-accent);
+    box-shadow: 0 0 0 0.25rem rgba(157, 78, 221, 0.25);
     color: white;
 }
 
@@ -130,8 +130,8 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
 
 .hover-lift:hover {
     transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(212, 175, 55, 0.15);
-    border-color: rgba(212, 175, 55, 0.4) !important;
+    box-shadow: 0 20px 40px rgba(157, 78, 221, 0.15);
+    border-color: rgba(157, 78, 221, 0.4) !important;
 }
 
 .hover-border {
@@ -139,7 +139,7 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
 }
 
 .hover-border:hover {
-    border-color: rgba(212, 175, 55, 0.5) !important;
+    border-color: rgba(157, 78, 221, 0.5) !important;
 }
 
 .glow-on-hover {
@@ -147,6 +147,6 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
 }
 
 .glow-on-hover:hover {
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.6), 0 0 40px rgba(212, 175, 55, 0.2);
+    box-shadow: 0 0 20px rgba(157, 78, 221, 0.6), 0 0 40px rgba(157, 78, 221, 0.2);
     transform: translateY(-2px);
 }
