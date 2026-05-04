@@ -18,5 +18,15 @@ namespace PerfumeStore.Controllers
             var perfumes = await _context.Perfumes.ToListAsync();
             return View(perfumes);
         }
+
+        public IActionResult About()
+        {
+            return View();
+        }
+
+        public IActionResult Contact()
+        {
+            return View();
+        }
     }
 }

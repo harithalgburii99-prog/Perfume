@@ -52,5 +52,58 @@ namespace PerfumeStore.Controllers
             }
             return RedirectToAction("Dashboard");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var perfume = await _context.Perfumes.FindAsync(id);
+            if (perfume == null)
+            {
+                return NotFound();
+            }
+            return View(perfume);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Perfume perfume)
+        {
+            if (id != perfume.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(perfume);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!PerfumeExists(perfume.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Dashboard));
+            }
+            return View(perfume);
+        }
+
+        private bool PerfumeExists(int id)
+        {
+            return _context.Perfumes.Any(e => e.Id == id);
+        }
     }
 }
